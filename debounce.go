@@ -4,10 +4,14 @@ import (
 	"time"
 )
 
+// Debounce works like DebounceDLQ, but does not maintain a dead-letter queue.
 func Debounce(in <-chan interface{}, t time.Duration) <-chan interface{} {
 	return DebounceDLQ(in, t, nil)
 }
 
+// DebounceDLQ debounces input.
+//  x-y-z-------a-b-c
+//      z           c
 func DebounceDLQ(in <-chan interface{}, t time.Duration, dlq chan interface{}) <-chan interface{} {
 	out := make(chan interface{})
 	go func() {
